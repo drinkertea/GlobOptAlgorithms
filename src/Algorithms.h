@@ -29,7 +29,8 @@ protected:
     std::vector<Interval>           m_intervals;
     std::vector<double>             m_characteristics;
     size_t                          m_curr_max_ind;
-
+    std::pair<double, double>       m_min;
+    double                          m_min_interval;
     void        sort();
     void        reset_characteristics();
     void        split_intervals(size_t index);
@@ -49,6 +50,8 @@ public:
     size_t      size();
     void        make_new_interval();
 
+    std::pair<double, double>   get_min() { return m_min; }
+    double                      get_min_interval() { return m_min_interval; }
     virtual void set_coff(double coff) {}
 };
 

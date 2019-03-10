@@ -83,6 +83,33 @@ ApplicationWindow
                             axisX: axisX
                             axisY: axisY
                         }
+                        ScatterSeries {
+                            axisX: axisX
+                            axisY: axisY
+                            name: "Scan"
+                            markerSize: 7
+                            borderWidth: 1
+                            color: "orange"
+                            borderColor: fontColor
+                        }
+                        ScatterSeries {
+                            axisX: axisX
+                            axisY: axisY
+                            name: "Piyavskiy"
+                            markerSize: 7
+                            borderWidth: 1
+                            color: piyavskiyColor
+                            borderColor: fontColor
+                        }
+                        ScatterSeries {
+                            axisX: axisX
+                            axisY: axisY
+                            name: "Strongin"
+                            markerSize: 7
+                            borderWidth: 1
+                            color: stronginColor
+                            borderColor: fontColor
+                        }
                     }
                 }
 
@@ -227,7 +254,7 @@ ApplicationWindow
                 {
                     id: label1_rect
                     color: backgroundColor
-                    Layout.preferredWidth: 125
+                    Layout.preferredWidth: 64
                     Layout.fillHeight: true
                     Label
                     {
@@ -236,7 +263,7 @@ ApplicationWindow
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.leftMargin: leftBarItemLeftMargin
                         anchors.left: parent.left
-                        text: "Input your function:"
+                        text: "Function:"
                     }
                 }
 
@@ -275,7 +302,7 @@ ApplicationWindow
                 Rectangle
                 {
                     color: backgroundColor
-                    Layout.preferredWidth: 107
+                    Layout.preferredWidth: 75
                     Layout.fillHeight: true
                     Label
                     {
@@ -284,7 +311,7 @@ ApplicationWindow
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.leftMargin: leftBarItemLeftMargin/ 3
                         anchors.left: parent.left
-                        text: "Input range, from:"
+                        text: "Range, from:"
                     }
                 }
 
@@ -371,7 +398,7 @@ ApplicationWindow
                 Rectangle
                 {
                     color: backgroundColor
-                    Layout.preferredWidth: 130
+                    Layout.preferredWidth: 95
                     Layout.fillHeight: true
                     Label
                     {
@@ -380,7 +407,7 @@ ApplicationWindow
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.leftMargin: leftBarItemLeftMargin / 3
                         anchors.left: parent.left
-                        text: "Input iterations count:"
+                        text: "Iterations count:"
                     }
                 }
 
@@ -419,7 +446,7 @@ ApplicationWindow
                 Rectangle
                 {
                     color: backgroundColor
-                    Layout.preferredWidth: 100
+                    Layout.preferredWidth: 115
                     Layout.fillHeight: true
                     Label
                     {
@@ -428,7 +455,7 @@ ApplicationWindow
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.leftMargin: leftBarItemLeftMargin / 3
                         anchors.left: parent.left
-                        text: "Input coefficient:"
+                        text: "Piyavskiy coefficient:"
                     }
                 }
 
@@ -461,6 +488,103 @@ ApplicationWindow
                         width: parent.width - 2 * leftBarItemLeftMargin
                         layer.enabled: true
                         text: Root.StepsMetods.coff
+                    }
+                }
+
+                Rectangle
+                {
+                    color: backgroundColor
+                    Layout.preferredWidth: 115
+                    Layout.fillHeight: true
+                    Label
+                    {
+                        color: fontColor
+                        font.pixelSize: 12
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.leftMargin: leftBarItemLeftMargin / 3
+                        anchors.left: parent.left
+                        text: "Strongin coefficient:"
+                    }
+                }
+
+                Rectangle
+                {
+                    color: backgroundColor
+                    Layout.preferredWidth: 50
+                    Layout.fillHeight: true
+                    Rectangle {
+                        color: "#3f3f46"
+                        anchors.fill: parent
+                        anchors.margins: 3
+                        Rectangle {
+                            color: "#007acc"
+                            anchors.bottom: parent.bottom
+                            width: parent.width
+                            x: parent.x - 3
+                            height: 1
+                            y : parent.y
+                        }
+                    }
+                    TextInput
+                    {
+                        id: coefr_textbox
+                        font.pixelSize: 12
+                        color: fontColor
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: leftBarItemLeftMargin
+                        width: parent.width - 2 * leftBarItemLeftMargin
+                        layer.enabled: true
+                        text: Root.StepsMetods.rcoff
+                    }
+                }
+
+                Rectangle
+                {
+                    color: backgroundColor
+                    Layout.preferredWidth: 45
+                    Layout.fillHeight: true
+                    Label
+                    {
+                        color: fontColor
+                        font.pixelSize: 12
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.leftMargin: leftBarItemLeftMargin / 3
+                        anchors.left: parent.left
+                        text: "Epsilon:"
+                    }
+                }
+
+                Rectangle
+                {
+                    color: backgroundColor
+                    Layout.preferredWidth: 50
+                    Layout.fillHeight: true
+                    Rectangle {
+                        color: "#3f3f46"
+                        anchors.fill: parent
+                        anchors.margins: 3
+                        Rectangle {
+                            color: "#007acc"
+                            anchors.bottom: parent.bottom
+                            width: parent.width
+                            x: parent.x - 3
+                            height: 1
+                            y : parent.y
+                        }
+                    }
+                    TextInput
+                    {
+                        id: eps_textbox
+                        font.pixelSize: 12
+                        color: fontColor
+                        antialiasing: false
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: leftBarItemLeftMargin
+                        width: parent.width - 2 * leftBarItemLeftMargin
+                        layer.enabled: true
+                        text: Root.StepsMetods.epsilon
                     }
                 }
 
@@ -501,8 +625,11 @@ ApplicationWindow
                                 Root.StepsMetods.leftEdge = parseFloat(left_textbox.text)
                                 Root.StepsMetods.rightEdge = parseFloat(right_textbox.text)
                                 Root.StepsMetods.coff = parseFloat(coef_textbox.text)
+                                Root.StepsMetods.rcoff = parseFloat(coefr_textbox.text)
+                                Root.StepsMetods.epsilon = parseFloat(eps_textbox.text)
                                 Root.StepsMetods.stepsCnt = parseInt(iter_textbox.text)
                                 Root.StepsMetods.updateAllSeries(chart.series(0), stats_chart.series(0),stats_chart.series(1),stats_chart.series(2));
+                                Root.StepsMetods.drawMinimums(chart.series(1),chart.series(2),chart.series(3));
 
                                 axisX.min = Root.StepsMetods.leftEdge;
                                 axisX.max = Root.StepsMetods.rightEdge;
@@ -520,7 +647,7 @@ ApplicationWindow
                 Rectangle
                 {
                     color: backgroundColor
-                    Layout.preferredWidth: leftBarItemLeftMargin
+                    Layout.preferredWidth: leftBarItemLeftMargin - 4
                     Layout.fillHeight: true
                 }
             }

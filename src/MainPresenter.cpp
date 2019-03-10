@@ -10,21 +10,23 @@ MainPresenter::MainPresenter()
     m_range.second = 10;
     m_range_y = std::make_pair(0.0, 4.0);
     m_iter_count = 256;
-    m_coff = 1.5;
+    m_coff = 2.0;
+    m_rcoff = 1.3;
+    m_epsilon = 0.001;
 
     m_scan_alg = std::make_unique<ScanAlgorithm>();
     m_piya_alg = std::make_unique<PiyavskiyAlgorithm>();
-    m_stong_alg = std::make_unique<StronginAlgorithm>();
+    m_strg_alg = std::make_unique<StronginAlgorithm>();
 }
 
 void MainPresenter::updateAllSeries(QAbstractSeries* func_s, QAbstractSeries* scan_s, QAbstractSeries* piya_s, QAbstractSeries* strong_s)
 {
-    if (!func_s || !scan_s || !piya_s || !strong_s || !m_scan_alg || !m_piya_alg || !m_stong_alg)
+    if (!func_s || !scan_s || !piya_s || !strong_s || !m_scan_alg || !m_piya_alg || !m_strg_alg)
         return;
 
     std::thread update_thread_1([&]() { updateSeries(scan_s,    static_cast<BaseAlgorithm*>(m_scan_alg.get()), -1.0); });
-    std::thread update_thread_2([&]() { updateSeries(piya_s,    static_cast<BaseAlgorithm*>(m_piya_alg.get()),  0.0); });
-    std::thread update_thread_3([&]() { updateSeries(strong_s,  static_cast<BaseAlgorithm*>(m_stong_alg.get()), 1.0); });
+    std::thread update_thread_2([&]() { updateSeries(piya_s,    static_cast<BaseAlgorithm*>(m_piya_alg.get()),  0.0, m_coff); });
+    std::thread update_thread_3([&]() { updateSeries(strong_s,  static_cast<BaseAlgorithm*>(m_strg_alg.get()),  1.0, m_rcoff); });
 
     QSplineSeries *spline_series = static_cast<QSplineSeries*>(func_s);
     spline_series->clear();
@@ -52,7 +54,26 @@ void MainPresenter::updateAllSeries(QAbstractSeries* func_s, QAbstractSeries* sc
     update_thread_3.join();
 }
 
-void MainPresenter::updateSeries(QAbstractSeries* series, BaseAlgorithm* alg, double level)
+void MainPresenter::drawMinimums(QAbstractSeries* scan_s, QAbstractSeries* piya_s, QAbstractSeries* strong_s)
+{
+    if (!scan_s || !piya_s || !strong_s || !m_scan_alg || !m_piya_alg || !m_strg_alg)
+        return;
+
+    drawMinimum(scan_s,     static_cast<BaseAlgorithm*>(m_scan_alg.get()));
+    drawMinimum(piya_s,     static_cast<BaseAlgorithm*>(m_piya_alg.get()));
+    drawMinimum(strong_s,   static_cast<BaseAlgorithm*>(m_strg_alg.get()));
+}
+
+void MainPresenter::drawMinimum(QAbstractSeries* series, BaseAlgorithm* alg)
+{
+    QScatterSeries *scatter_series = static_cast<QScatterSeries*>(series);
+    scatter_series->clear();
+    auto min = alg->get_min();
+    QList<QPointF> points = { QPointF(min.first, min.second) };
+    scatter_series->append(points);
+}
+
+void MainPresenter::updateSeries(QAbstractSeries* series, BaseAlgorithm* alg, double level, double coff)
 {
     QScatterSeries *scatter_series = static_cast<QScatterSeries*>(series);
     {
@@ -60,11 +81,11 @@ void MainPresenter::updateSeries(QAbstractSeries* series, BaseAlgorithm* alg, do
         scatter_series->clear();
         alg->reset();
         alg->set_function(m_expression.toStdString());
-        alg->set_coff(m_coff);
+        alg->set_coff(coff);
         alg->initialize(m_range.first, m_range.second);
     }
 
-    for (size_t i = 0; i < m_iter_count; ++i)
+    for (size_t i = 0; i < m_iter_count && alg->get_min_interval() > m_epsilon; ++i)
         alg->make_new_interval();
     QList<QPointF> points;
     points.reserve(alg->size() + 1);

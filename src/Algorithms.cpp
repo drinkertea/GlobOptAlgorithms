@@ -3,6 +3,8 @@
 
 #include <map>
 #include <cassert>
+#include <memory>
+#include <algorithm>
 
 Interval::Interval(double left, double right)
 {
@@ -83,6 +85,10 @@ Interval BaseAlgorithm::get_interval(size_t index)
 void BaseAlgorithm::initialize(double left, double right)
 {
     m_intervals.emplace_back(Interval(left, right));
+    double fl = get_function_value(left);
+    double fr = get_function_value(right);
+    m_min = fl < fr ? std::make_pair(left, fl) : std::make_pair(right, fr);
+    m_min_interval = m_intervals.back().get_length();
     reset_characteristics();
 }
 
@@ -98,6 +104,8 @@ void BaseAlgorithm::sort()
 
 void BaseAlgorithm::reset()
 {
+    m_min = std::make_pair(0.0, std::numeric_limits<double>::max());
+    m_min_interval = std::numeric_limits<double>::max();
     m_curr_max_ind = 0;
     m_intervals.clear();
     m_characteristics.clear();
@@ -121,6 +129,15 @@ void BaseAlgorithm::split_intervals(size_t index)
 {
     Interval first(m_intervals[index].m_left, get_split_point(index));
     Interval second(first.m_right, m_intervals[index].m_right);
+
+    double fval = get_function_value(second.m_left);
+    if (fval < m_min.second)
+        m_min = std::make_pair(second.m_left, fval);
+
+    double min_l = std::min(first.get_length(), second.get_length());
+    if (min_l < m_min_interval)
+        m_min_interval = min_l;
+
     m_intervals[index] = second;
     m_intervals.emplace(m_intervals.begin() + index, std::move(first));
     reset_characteristics();

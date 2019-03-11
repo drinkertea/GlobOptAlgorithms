@@ -160,14 +160,14 @@ double ScanAlgorithm::get_split_point(size_t index)
 
 double PiyavskiyAlgorithm::calc_character(size_t index)
 {
-    return 0.5 * m_coff * ((m_intervals[index].m_right - m_intervals[index].m_left) -
-        (get_function_value(m_intervals[index].m_right) + get_function_value(m_intervals[index].m_left)) / 2.0);
+    return 0.5 * (m_coff * (m_intervals[index].m_right - m_intervals[index].m_left) -
+        (get_function_value(m_intervals[index].m_right) + get_function_value(m_intervals[index].m_left)));
 }
 
 double PiyavskiyAlgorithm::get_split_point(size_t index)
 {
-    return 0.5 * (m_intervals[index].m_right + m_intervals[index].m_left) -
-        (get_function_value(m_intervals[index].m_right) - get_function_value(m_intervals[index].m_left)) / (2.0 * m_coff);
+    return 0.5 * ((m_intervals[index].m_right + m_intervals[index].m_left) -
+        (get_function_value(m_intervals[index].m_right) - get_function_value(m_intervals[index].m_left)) / m_coff);
 }
 
 double StronginAlgorithm::calc_character(size_t index)
@@ -183,7 +183,7 @@ double StronginAlgorithm::calc_character(size_t index)
         m_m = m_r * m_M;
     else
         m_m = 1.0;
-    return m_m * delta_x + std::pow(delta_f, 2.0) / (m_m * delta_x) - 2.0 * (r_f + l_f);
+    return m_m * delta_x + (delta_f * delta_f) / (m_m * delta_x) - 2.0 * (r_f + l_f);
 }
 
 double StronginAlgorithm::get_split_point(size_t index)

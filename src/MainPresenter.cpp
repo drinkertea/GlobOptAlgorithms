@@ -6,12 +6,12 @@
 
 MainPresenter::MainPresenter()
 {
-    m_expression = "cos(3.14159 * x) + sin(x)";
+    m_expression = "3cos(5x) + 2sin(3x)";
     m_range.second = 10;
     m_range_y = std::make_pair(0.0, 4.0);
     m_iter_count = 256;
-    m_coff = 2.0;
-    m_rcoff = 1.3;
+    m_coff = 25.0;
+    m_rcoff = 1.8;
     m_epsilon = 0.001;
 
     m_scan_alg = std::make_unique<ScanAlgorithm>();

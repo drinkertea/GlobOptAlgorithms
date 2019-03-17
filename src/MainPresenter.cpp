@@ -45,8 +45,10 @@ void MainPresenter::updateAllSeries(QAbstractSeries* func_s, QAbstractSeries* sc
     for (size_t i = 0; i < m_scan_alg->size(); ++i)
         process_point(m_scan_alg->get_interval(i).m_left);
     process_point(m_scan_alg->get_interval(m_scan_alg->size() - 1).m_right);
-    setMaxY(std::round((max + 0.1) * 10.0) / 10.0);
-    setMinY(std::round((min - 0.1) * 10.0) / 10.0);
+
+    double offset = (max - min) / 20.0;
+    setMaxY(std::round((max + offset) * 10.0) / 10.0);
+    setMinY(std::round((min - offset) * 10.0) / 10.0);
 
     spline_series->append(points);
 

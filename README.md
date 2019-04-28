@@ -13,4 +13,4 @@ Realization of sequential global optimization algorithms such as:
 * Run build.bat
 
 #### Screenshot
-![screen](https://user-images.githubusercontent.com/23703391/54083068-fe457700-432f-11e9-8e73-3a4a73bdc9b1.png)
+![screenshot](https://user-images.githubusercontent.com/23703391/56865876-99c3a180-69db-11e9-80f1-9bb9bcc9c736.png)
